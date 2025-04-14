@@ -1,0 +1,4 @@
+[root@feng000 myblog]# npm -v
+10.8.2
+[root@feng000 myblog]# node -v
+v20.18.2
