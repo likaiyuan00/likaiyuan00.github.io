@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>prometheus | 欢迎</title><meta name="author" content="lky"><meta name="copyright" content="lky"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="https:&#x2F;&#x2F;github.com&#x2F;likaiyuan00&#x2F;k8s-prometheus.git k8s-prometheus部署kubernetes_sd_configs配置文件只采集了  1 prometheus*  prometheus-server2 container*   kubelet 的10250端口  &#x2F;metrics&#x2F;cadvisor3 node*">
+<meta property="og:type" content="article">
+<meta property="og:title" content="prometheus">
+<meta property="og:url" content="https://likaiyuan00.github.io/2025/04/18/prometheus/index.html">
+<meta property="og:site_name" content="欢迎">
+<meta property="og:description" content="https:&#x2F;&#x2F;github.com&#x2F;likaiyuan00&#x2F;k8s-prometheus.git k8s-prometheus部署kubernetes_sd_configs配置文件只采集了  1 prometheus*  prometheus-server2 container*   kubelet 的10250端口  &#x2F;metrics&#x2F;cadvisor3 node*">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likaiyuan00.github.io/img/image-3.png">
+<meta property="article:published_time" content="2025-04-18T01:56:59.000Z">
+<meta property="article:modified_time" content="2025-04-18T01:59:12.941Z">
+<meta property="article:author" content="lky">
+<meta property="article:tag" content="prometheus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likaiyuan00.github.io/img/image-3.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "prometheus",
+  "url": "https://likaiyuan00.github.io/2025/04/18/prometheus/",
+  "image": "https://likaiyuan00.github.io/img/image-3.png",
+  "datePublished": "2025-04-18T01:56:59.000Z",
+  "dateModified": "2025-04-18T01:59:12.941Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "lky",
+      "url": "https://likaiyuan00.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/image-2.png"><link rel="canonical" href="https://likaiyuan00.github.io/2025/04/18/prometheus/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'prometheus',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/img.png" alt="Logo"><span class="site-name">欢迎</span></a><a class="nav-page-title" href="/"><span class="site-name">prometheus</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">prometheus</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-18T01:56:59.000Z" title="发表于 2025-04-18 09:56:59">2025-04-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-18T01:59:12.941Z" title="更新于 2025-04-18 09:59:12">2025-04-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/prometheus/">prometheus</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><a target="_blank" rel="noopener" href="https://github.com/likaiyuan00/k8s-prometheus.git">https://github.com/likaiyuan00/k8s-prometheus.git</a></p>
+<h1 id="k8s-prometheus"><a href="#k8s-prometheus" class="headerlink" title="k8s-prometheus"></a>k8s-prometheus</h1><p>部署kubernetes_sd_configs<br>配置文件只采集了</p>
+<blockquote>
+<p>1 prometheus*  prometheus-server<br><br>2 container*   kubelet 的10250端口  &#x2F;metrics&#x2F;cadvisor<br><br>3 node*    node_exporter<br><br>4 apiserver*  apiserver 6443 端口 &#x2F;metrics<br><br>5 kube*  kube-state-metrics组件 8080端口 &#x2F;metrics<br><br>6 coredns*  kubernetes-pods 自动发现 pod需要配置 prometheus.io&#x2F;scrape: “true” 不然抓取不到 默认flase<br><br>prometheus.io&#x2F;path: “&#x2F;metrics”   # 指标路径（默认 &#x2F;metrics 可不写）<br><br>7 kubelet*  apiserver代理端点 &#x2F;api&#x2F;v1&#x2F;nodes&#x2F;&lt;node-name&gt;&#x2F;proxy&#x2F;metrics<br>其他有需要的可以自行配置</p>
+</blockquote>
+<p>导入镜像，执行yml文件即可</p>
+<h2 id="prometheus效果图"><a href="#prometheus效果图" class="headerlink" title="prometheus效果图"></a>prometheus效果图</h2><p><img src="/2025/04/18/prometheus/image-2.png" alt="alt text"></p>
+<h2 id="grafana效果图"><a href="#grafana效果图" class="headerlink" title="grafana效果图"></a>grafana效果图</h2><p><img src="/2025/04/18/prometheus/image-3.png" alt="alt text"><br><img src="/2025/04/18/prometheus/image-4.png" alt="alt text"><br><img src="/2025/04/18/prometheus/image-5.png" alt="alt text"></p>
+<h2 id="kubelet-组件"><a href="#kubelet-组件" class="headerlink" title="kubelet 组件"></a>kubelet 组件</h2><p> kubelet 三个指标 &#x2F;metrics&#x2F;probes（探针） &#x2F;metrics&#x2F;cadvisor（pod） &#x2F;metrics（node）</p>
+<p>对应apiserver的 &#x2F;api&#x2F;v1&#x2F;nodes&#x2F;${node-name}&#x2F;proxy&#x2F;${url};一般为了减少apiserver的负载不建议使用这种方式 **</p>
+<p>直接访问会报401没有权限<br><img src="/2025/04/18/prometheus/image-6.png" alt="alt text"></p>
+<p>需要先获取token，上面文件执行完会有一个prometheus用户<br><img src="/2025/04/18/prometheus/image-7.png" alt="alt text"></p>
+<p>pod内token路径为 &#x2F;var&#x2F;run&#x2F;secrets&#x2F;kubernetes.io&#x2F;serviceaccount&#x2F;token</p>
+<p>通过token再去访问发现就正常了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/metrics</span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:6443/api/v1/nodes/master/proxy/metrics</span><br><span class="line"></span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:10250/metrics</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/04/18/prometheus/image-8.png" alt="alt text"></p>
+<p>对应kubelet*开头<br><img src="/2025/04/18/prometheus/image-9.png" alt="alt text"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/metrics/probes（探针）</span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:6443/api/v1/nodes/master/proxy/metrics/probes</span><br><span class="line"></span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:10250/metrics/probes</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/04/18/prometheus/image-10.png" alt="alt text"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/metrics/cadvisor（pod）</span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:6443/api/v1/nodes/master/proxy/metrics/cadvisor</span><br><span class="line"></span><br><span class="line">curl -k -sS  -H &quot;Authorization: Bearer $TOKEN&quot;  https://127.0.0.1:10250/metrics/cadvisor</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/04/18/prometheus/image-11.png" alt="alt text"></p>
+<p>对应container*开头，容器指标<br><img src="/2025/04/18/prometheus/image-12.png" alt="alt text"></p>
+<h2 id="node-exporter"><a href="#node-exporter" class="headerlink" title="node_exporter"></a>node_exporter</h2><p>端口暴露到节点了就不需要token了<br><img src="/2025/04/18/prometheus/image-13.png" alt="alt text"></p>
+<p>node*开头，节点指标<br><img src="/2025/04/18/prometheus/image-14.png" alt="alt text"></p>
+<h2 id="kube-state-metrics"><a href="#kube-state-metrics" class="headerlink" title="kube-state-metrics"></a>kube-state-metrics</h2><p>集群应用状态监控比较重要的一个需要单独安装<br>使用containerPort: 8080 暴露到节点了不需要token<br><img src="/2025/04/18/prometheus/image-15.png" alt="alt text"></p>
+<p>kube*开头<br><img src="/2025/04/18/prometheus/image-16.png" alt="alt text"></p>
+<h2 id="apiserver"><a href="#apiserver" class="headerlink" title="apiserver"></a>apiserver</h2><p>主要是监控apiserver的qps,查询成功率失败率等信息<br><img src="/2025/04/18/prometheus/image-17.png" alt="alt text"></p>
+<p>apiserver*开头<br><img src="/2025/04/18/prometheus/image-18.png" alt="alt text"></p>
+<h2 id="kubernetes-pods-自动发现"><a href="#kubernetes-pods-自动发现" class="headerlink" title="kubernetes-pods 自动发现"></a>kubernetes-pods 自动发现</h2><p>如果元数据内设置true，该pod才可以被抓取，默认false<br><img src="/2025/04/18/prometheus/image-19.png" alt="alt text"></p>
+<p>以coredns为例<br><img src="/2025/04/18/prometheus/image-20.png" alt="alt text"><br><img src="/2025/04/18/prometheus/image-21.png" alt="alt text"></p>
+<p>以coredns*开头<br><img src="/2025/04/18/prometheus/image-22.png" alt="alt text"></p>
+<p>这个自动发现还可以配置自身业务的监控，只有保证开启抓取，和符合prometheus抓取规范就可以，如果开启了prometheus.io&#x2F;scrape 但是pod并没有提供数据指标的能力就会直接报错，如图404<br><img src="/2025/04/18/prometheus/image-23.png" alt="alt text"></p>
+<p>比如现在我想加一个grafana的数据，只需要添加对应元数据就可以了<br><img src="/2025/04/18/prometheus/image-24.png" alt="alt text"></p>
+<p>prometheus就自动发现了pod的ip<br><img src="/2025/04/18/prometheus/image-1.png" alt="alt text"></p>
+<p>grafana*开头<br><img src="/2025/04/18/prometheus/image.png" alt="alt text"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/prometheus/">prometheus</a></div><div class="post-share"><div class="social-share" data-image="/img/image-3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/04/14/about/" title="about"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">about</div></div><div class="info-2"><div class="info-item-1">分类 </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">lky</div><div class="author-info-description">记录一些觉得有用的东西</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/likaiyuan00"><i class="fab fa-github"></i><span>地址</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">心平能愈三千疾 心静可通万事理</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#k8s-prometheus"><span class="toc-number">1.</span> <span class="toc-text">k8s-prometheus</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#prometheus%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="toc-number">1.1.</span> <span class="toc-text">prometheus效果图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#grafana%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">grafana效果图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kubelet-%E7%BB%84%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">kubelet 组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#node-exporter"><span class="toc-number">1.4.</span> <span class="toc-text">node_exporter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kube-state-metrics"><span class="toc-number">1.5.</span> <span class="toc-text">kube-state-metrics</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#apiserver"><span class="toc-number">1.6.</span> <span class="toc-text">apiserver</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kubernetes-pods-%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0"><span class="toc-number">1.7.</span> <span class="toc-text">kubernetes-pods 自动发现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/18/prometheus/" title="prometheus">prometheus</a><time datetime="2025-04-18T01:56:59.000Z" title="发表于 2025-04-18 09:56:59">2025-04-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/14/about/" title="about">about</a><time datetime="2025-04-14T08:31:01.000Z" title="发表于 2025-04-14 16:31:01">2025-04-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By lky</div><div class="footer_custom_text">Hi, 欢迎观看我的博客 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49254673">点击这里进入</a>!"</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="请输入关键字" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

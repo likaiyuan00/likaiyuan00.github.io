@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: yyy
+title: '欢迎'
 subtitle: '博客'
 description: '记录一些觉得有用的东西'
 keywords: '云原生'
@@ -69,7 +69,7 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 syntax_highlighter: highlight.js
