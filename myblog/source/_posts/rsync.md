@@ -4,6 +4,7 @@ date: 2025-08-05 17:43:37
 tags:
 categories: linux
 ---
+
 # 命令主要参数
 ```shell
 -a, ––archive	归档模式，表示以递归方式传输文件，并保持所有文件属性，等价于 -rlptgoD (注意不包括 -H)
@@ -151,6 +152,7 @@ secrets file = /etc/rsyncd_users.db
 ```
 
 # 额外
+## 大量文件添加失败重试
 ```shell
 #!/bin/bash
 
@@ -194,5 +196,174 @@ done
 
 echo "$(date) - 达到最大重试次数，同步终止。" | tee -a "$LOG_FILE"
 exit 1
+```
+**两种同步模式**<br>
+**1.服务端推送；需要每个客户端启动rsync --deamon添加配置文件不然需要使用ssh模式涉及密码不安全,监控服务端文件变化去同步客户端节点大部分情况用这种，弊端就是节点较多服务端同步起来负载会比较高**<br>
+**2.客户端推送；只需要在服务端配置rsync --deamon监控客户端文件变化去推送数据到服务端，由于多节点存在数据不一致这种情况建议不使用--delete不然一个节点操作删除，服务端也会被删除；或者使用客户端拉取这种情况只有通过定时任务实现就无法使用监控程序了**
+## rsync+inotify
+* 异地备份cdn节点少量同步；变动不频繁
+```shell
+inotify-tools 包含 inotifywatch  inotifywait两个命令
+inotifywatch -v -t 60 -r /var/log #统计次数
+inotifywait -mrq --format "%T %w%f %e" --timefmt "%F-%T" -e create,delete,move,modify,attrib /data/ |  
+  while read TIME FILE EVENT; do
+  echo "时间: $TIME | 文件: $FILE | 事件: $EVENT "
+done
+%T	时间戳（需配合 --timefmt 定义格式）
+%w	监控目录的路径（绝对或相对路径）
+%f	触发事件的文件名（不含路径）
+%e	事件类型（多个事件用逗号分隔）
+
+-m 持续监听
+-r 使用递归形式监视目录
+-q 减少冗余信息，只打印出需要的信息
+-e 指定要监视的事件，多个时间使用逗号隔开
+–timefmt 时间格式
+–format 监听到的文件变化的信息
+
+access	文件被读取
+modify	文件内容被修改
+attrib	文件元数据（如权限、时间戳）变更
+create	文件/目录创建
+delete	文件/目录删除
+open, close	文件被打开或关闭
+
+
+#在client运行脚本，client目录发送变化会同步到rsync服务端
+cat > ./inotify_rsync.sh << 'EOF'  
+#!/bin/bash
+# Rsync配置
+RSYNC_CMD="rsync -avzS --partial --delay-updates --delete --password-file=/etc/client.pass /data/ backuper@10.0.1.122::wwwroot"
+LOG_FILE="/var/log/inotify_rsync.log"
+
+# 创建日志文件（如果不存在）
+touch "$LOG_FILE"
+
+# 开始监控并处理事件
+inotifywait -mrq --format "%T %w%f %e" --timefmt "%F-%T" -e create,delete,move,modify,attrib /data/ |  
+while read TIME FILE EVENT; do
+    # 记录事件到日志
+    echo "[事件] 时间: $TIME | 文件: $FILE | 操作: $EVENT" >> "$LOG_FILE"
+    
+    # 执行rsync同步（添加错误重试机制）
+    if ! $RSYNC_CMD >> "$LOG_FILE" 2>&1; then
+        echo "[错误] 同步失败！时间: $(date '+%F-%T')" >> "$LOG_FILE"
+    else
+        echo "[同步] 成功完成！时间: $(date '+%F-%T')" >> "$LOG_FILE"
+    fi
+done
+EOF
+chmod +x inotify_rsync.sh
+cat >  /etc/systemd/system/inotify_rsync.service << 'EOF'  
+[Unit]
+Description=Auto Sync Service via inotify+rsync
+
+[Service]
+Type=simple
+User=root
+ExecStart=/tmp/rsync_daemon/inotify_rsync.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+```
+
+
+## rsync+lsyncd
+* 适合大量数据同步场景；变动频繁<br>
+[官方文档参数解读](https://lsyncd.github.io/lsyncd/manual/config/layer4/)
+```shell
+#ubuntu /etc/lsyncd/lsyncd.conf.lua
+cat > /etc/lsyncd.conf << 'EOF'
+settings {
+  logfile = "/var/log/lsyncd.log",
+  statusFile = "/var/log/lsyncd.status",
+  insist = true,
+  statusInterval = 10
+}
+
+sync {
+  default.rsync,
+  source = "/tmp/rsync_ly",
+  target = "backuper@10.0.1.122::wwwroot",
+  -- excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst",
+  delete = true,
+  delay = 20,
+  maxDelays = 1,
+  rsync = {
+    binary = "/usr/bin/rsync",
+    archive = true,
+    compress = true,
+    verbose = false,
+    password_file = "/etc/client.pass",
+    _extra    = {
+            "--partial",          
+            "--timeout=300"    
+  --          "--bwlimit=5000"      
+        },
+  }
+}
+EOF
+
+========================================================
+
+-- 全局配置：
+settings {
+        logfile ="/var/log/lsyncd/lsyncd.log", -- 定义日志文件
+        statusFile ="/var/log/lsyncd/lsyncd.status",  -- 定义状态文件
+        pidfile = "/var/log/lsyncd/lsyncd.pid",-- 定义pid文件
+        inotifyMode = "CloseWrite",-- 指定inotify监控的事件，默认是CloseWrite，还可以是Modify或CloseWrite or Modify
+      	maxProcesses = 7,-- 同步进程的最大个数。假如同时有20个文件需要同步，而maxProcesses = 8，则最大能看到有8个rysnc进程
+        nodaemon =true,-- 表示不启用守护模式，默认；
+        maxDelays = 1, --  累计到多少所监控的事件激活一次同步，即使后面的delay延迟时间还未到
+        inist = ture --keep running at startup although one or more targets failed due to not being reachable.  一般不用配置
+       }
+
+-- sync部分配置：
+sync {
+      default.rsync,     -- rsync、rsyncssh、direct三种模式：
+    -- default.rsync ：本地目录间同步，使用rsync，也可以达到使用ssh形式的远程rsync效果，或daemon方式连接远程rsyncd进程；
+    -- default.direct ：本地目录间同步，使用cp、rm等命令完成差异文件备份；
+    -- default.rsyncssh ：同步到远程主机目录，rsync的ssh模式，需要使用key来认证；
+      source = "/tmp/src", -- source 同步的源目录，使用绝对路径
+      target = "/tmp/dest", -- target 定义目的地址.对应不同的模式有几种写法:
+    	-- /tmp/dest ：本地目录同步，可用于direct和rsync模式；
+    	-- 10.4.7.10:/tmp/dest ：同步到远程服务器目录，可用于rsync和rsyncssh模式，拼接的命令类似于/usr/bin/rsync -ltsd --delete --include-from=- --exclude=* SOURCE TARGET，剩下的就是rsync的内容了，比如指定username，免密码同步；
+   		-- 10.4.7.10::module ：同步到远程服务器目录，用于rsync模式；
+      init = true,  -- init 这是一个优化选项，当init = false，只同步进程启动以后发生改动事件的文件，原有的目录即使有差异也不会同步。默认是true；
+      delay = 3, -- delay 累计事件，等待rsync同步延时时间，默认15秒（最大累计到1000个不可合并的事件）。也就是15s内监控目录下发生的改动，会累积到一次rsync同步，避免过于频繁的同步。（可合并的意思是，15s内两次修改了同一文件，最后只同步最新的文件）;
+      excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst",  -- excludeFrom 排除选项，后面指定排除的列表文件，如excludeFrom = "/etc/lsyncd.exclude"，如果是简单的排除，可以使用exclude = LIST。这里的排除规则写法与原生rsync有点不同，更为简单：
+		-- 监控路径里的任何部分匹配到一个文本，都会被排除，例如/bin/foo/bar可以匹配规则foo
+		-- 如果规则以斜线/开头，则从头开始要匹配全部
+		-- 如果规则以/结尾，则要匹配监控路径的末尾
+		-- ?匹配任何字符，但不包括/
+		-- *匹配0或多个字符，但不包括/
+		-- **匹配0或多个字符，可以是/
+      delete	=	'running',  -- delete 为了保持target与souce完全同步，Lsyncd默认会delete = true来允许同步删除。它除了false，还有startup、running值：
+      -- delete	=	true       # 在目标上删除源中没有的内容。在启动时以及在正常操作期间删除的内容
+      -- delete	=	false      # 不会删除目标上的任何文件。不在启动时也不在正常操作上
+      -- delete	=	'startup'  # Lsyncd将在启动时删除目标上的文件，但不会在正常操作时删除
+      -- delete	=	'running'  # Lsyncd在启动时不会删除目标上的文件，但会删除正常操作期间删除的文件
+
+    
+-- rsync部分配置：    
+      -- delete和exclude本来都是rsync的选项，上面是配置在sync中的，这样做的原因是为了减少rsync的开销
+      rsync = {
+             bwlimit=200, -- bwlimit 限速，单位kb/s，与rsync相同（这么重要的选项在文档里竟然没有标出）；
+             binary = "/usr/bin/rsync", -- rsync可执行程序地址，默认/usr/bin/rsync
+             archive = true, -- 默认false，以递归方式传输文件，并保持所有文件属性
+             compress = true,-- 压缩传输默认为true。在带宽与cpu负载之间权衡，本地目录同步可以考虑把它设为false；
+             verbose = true,--同步详细模式输出
+        	 perms = true -- perms 保留文件权限,默认为true；
+      }
+}
+
+#-- excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst", 
+#*.log
+#/cache/
+#/temp/
+#.git/
 
 ```
