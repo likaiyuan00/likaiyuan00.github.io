@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>python ThreadPoolExecutor | 欢迎</title><meta name="author" content="lky"><meta name="copyright" content="lky"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="并发执行方法对比（submit&#x2F;as_completed&#x2F;map）核心特性对比表   特征 executor.map() submit+顺序处理 as_completed    执行顺序 并发执行 并发执行 并发执行   结果顺序 保持输入顺序 保持提交顺序 按完成顺序   异常处理 遇到第一个异常立即抛出 可逐个处理异常 可单独处理每个任务异常   代码复杂度 ★☆☆ 最简单">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python ThreadPoolExecutor">
+<meta property="og:url" content="https://likaiyuan00.github.io/2025/08/26/python-ThreadPoolExecutor/index.html">
+<meta property="og:site_name" content="欢迎">
+<meta property="og:description" content="并发执行方法对比（submit&#x2F;as_completed&#x2F;map）核心特性对比表   特征 executor.map() submit+顺序处理 as_completed    执行顺序 并发执行 并发执行 并发执行   结果顺序 保持输入顺序 保持提交顺序 按完成顺序   异常处理 遇到第一个异常立即抛出 可逐个处理异常 可单独处理每个任务异常   代码复杂度 ★☆☆ 最简单">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likaiyuan00.github.io/img/image-3.png">
+<meta property="article:published_time" content="2025-08-26T09:08:36.000Z">
+<meta property="article:modified_time" content="2025-08-26T09:11:45.269Z">
+<meta property="article:author" content="lky">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likaiyuan00.github.io/img/image-3.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "python ThreadPoolExecutor",
+  "url": "https://likaiyuan00.github.io/2025/08/26/python-ThreadPoolExecutor/",
+  "image": "https://likaiyuan00.github.io/img/image-3.png",
+  "datePublished": "2025-08-26T09:08:36.000Z",
+  "dateModified": "2025-08-26T09:11:45.269Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "lky",
+      "url": "https://likaiyuan00.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/image-2.png"><link rel="canonical" href="https://likaiyuan00.github.io/2025/08/26/python-ThreadPoolExecutor/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/@fortawesome/fontawesome-free@6.2.1/css/all.min.css"><link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'python ThreadPoolExecutor',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/img.png" alt="Logo"><span class="site-name">欢迎</span></a><a class="nav-page-title" href="/"><span class="site-name">python ThreadPoolExecutor</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">python ThreadPoolExecutor</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-26T09:08:36.000Z" title="发表于 2025-08-26 17:08:36">2025-08-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-26T09:11:45.269Z" title="更新于 2025-08-26 17:11:45">2025-08-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/python/">python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="并发执行方法对比（submit-as-completed-map）"><a href="#并发执行方法对比（submit-as-completed-map）" class="headerlink" title="并发执行方法对比（submit&#x2F;as_completed&#x2F;map）"></a>并发执行方法对比（submit&#x2F;as_completed&#x2F;map）</h1><h2 id="核心特性对比表"><a href="#核心特性对比表" class="headerlink" title="核心特性对比表"></a>核心特性对比表</h2><table>
+<thead>
+<tr>
+<th>特征</th>
+<th><code>executor.map()</code></th>
+<th><code>submit</code>+顺序处理</th>
+<th><code>as_completed</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>执行顺序</strong></td>
+<td>并发执行</td>
+<td>并发执行</td>
+<td>并发执行</td>
+</tr>
+<tr>
+<td><strong>结果顺序</strong></td>
+<td>保持输入顺序</td>
+<td>保持提交顺序</td>
+<td>按完成顺序</td>
+</tr>
+<tr>
+<td><strong>异常处理</strong></td>
+<td>遇到第一个异常立即抛出</td>
+<td>可逐个处理异常</td>
+<td>可单独处理每个任务异常</td>
+</tr>
+<tr>
+<td><strong>代码复杂度</strong></td>
+<td>★☆☆ 最简单</td>
+<td>★★☆ 中等</td>
+<td>★★★ 最灵活</td>
+</tr>
+<tr>
+<td><strong>内存消耗</strong></td>
+<td>低（惰性迭代）</td>
+<td>高（需存储所有future）</td>
+<td>中（动态处理）</td>
+</tr>
+<tr>
+<td><strong>进度反馈</strong></td>
+<td>无法实时获取</td>
+<td>需手动实现</td>
+<td>自动实时反馈</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>简单转换&#x2F;批量处理</td>
+<td>需要严格顺序的结果</td>
+<td>需要及时处理完成的场景</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="方法详解"><a href="#方法详解" class="headerlink" title="方法详解"></a>方法详解</h2><h3 id="1-executor-map"><a href="#1-executor-map" class="headerlink" title="1. executor.map()"></a>1. <code>executor.map()</code></h3><p><strong>典型用法</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_data</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor() <span class="keyword">as</span> executor:</span><br><span class="line">    results = executor.<span class="built_in">map</span>(process_data, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])  <span class="comment"># 保持输入顺序</span></span><br><span class="line">    <span class="keyword">for</span> res <span class="keyword">in</span> results:</span><br><span class="line">        <span class="built_in">print</span>(res)  <span class="comment"># 按1→2→3的顺序输出2,4,6</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#示例下载有顺序的小说</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">download_chapter</span>(<span class="params">index, url</span>):</span><br><span class="line">    <span class="comment"># 模拟下载（并行，执行顺序不确定）</span></span><br><span class="line">    <span class="keyword">return</span> (index, <span class="string">f&quot;第 <span class="subst">&#123;index&#125;</span> 章内容&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过bs4获取列表，输入是有序的章节列表</span></span><br><span class="line">chapters = [</span><br><span class="line">    (<span class="number">1</span>, <span class="string">&quot;http://example.com/ch1&quot;</span>),</span><br><span class="line">    (<span class="number">2</span>, <span class="string">&quot;http://example.com/ch2&quot;</span>),</span><br><span class="line">    (<span class="number">3</span>, <span class="string">&quot;http://example.com/ch3&quot;</span>)</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">3</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    <span class="comment"># 提交任务（按顺序）</span></span><br><span class="line">    results = executor.<span class="built_in">map</span>(</span><br><span class="line">        <span class="keyword">lambda</span> args: download_chapter(*args),</span><br><span class="line">        chapters</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 拆解元组参数为独立的参数</span></span><br><span class="line">    <span class="keyword">lambda</span> args: download_chapter(*args)</span><br><span class="line">    <span class="comment"># 等效于：</span></span><br><span class="line">    <span class="comment"># def unpack_and_call(args):</span></span><br><span class="line">    <span class="comment">#     return download_chapter(args[0], args[1])  # 解包元组</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 按输入顺序写入文件</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;book.txt&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> index, content <span class="keyword">in</span> results:</span><br><span class="line">            f.write(<span class="string">f&quot;<span class="subst">&#123;content&#125;</span>\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点</strong>：</p>
+<ul>
+<li>自动将可迭代参数映射到函数</li>
+<li>结果顺序与输入参数严格一致</li>
+<li>遇到第一个异常时会立即停止迭代</li>
+</ul>
+<p><strong>最佳场景</strong>：</p>
+<ul>
+<li>数据并行转换（如批量图片压缩）</li>
+<li>需要保持输入输出顺序对应的任务</li>
+</ul>
+<hr>
+<h3 id="2-submit-顺序处理"><a href="#2-submit-顺序处理" class="headerlink" title="2. submit + 顺序处理"></a>2. <code>submit</code> + 顺序处理</h3><p><strong>典型用法</strong>：参数必须是可迭代对象，如 i for i in range(1, 4)；submit不需要因为是手动提交</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">multiply</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="keyword">return</span> x * y</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor() <span class="keyword">as</span> executor:</span><br><span class="line">    <span class="comment"># 生成器作为可迭代对象</span></span><br><span class="line">    nums1 = (i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">4</span>))</span><br><span class="line">    nums2 = (i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>, <span class="number">13</span>))</span><br><span class="line">    results = executor.<span class="built_in">map</span>(multiply, nums1, nums2)</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">list</span>(results))  <span class="comment"># 输出 [10, 22, 36]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交单个任务，参数直接传递，可以不用是列表</span></span><br><span class="line">future = executor.submit(multiply, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(future.result())  <span class="comment"># 输出 8</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#示例代码，不同任务</span></span><br><span class="line"> 定义三类不同参数的任务函数</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">download</span>(<span class="params">url, timeout</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟下载任务（参数：URL + 超时时间）&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;开始下载: <span class="subst">&#123;url&#125;</span>, 超时设置: <span class="subst">&#123;timeout&#125;</span>秒&quot;</span>)</span><br><span class="line">    time.sleep(random.uniform(<span class="number">0.5</span>, <span class="number">2</span>))</span><br><span class="line">    <span class="keyword">if</span> random.random() &lt; <span class="number">0.2</span>:</span><br><span class="line">        <span class="keyword">raise</span> URLError(<span class="string">f&quot;无法访问 <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;下载完成: <span class="subst">&#123;url&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate</span>(<span class="params">a, b, operator</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟计算任务（参数：两个数 + 运算符）&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;计算: <span class="subst">&#123;a&#125;</span> <span class="subst">&#123;operator&#125;</span> <span class="subst">&#123;b&#125;</span>&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line">    <span class="keyword">if</span> operator == <span class="string">&quot;+&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> a + b</span><br><span class="line">    <span class="keyword">elif</span> operator == <span class="string">&quot;*&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> a * b</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">f&quot;不支持的运算符: <span class="subst">&#123;operator&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">log_message</span>(<span class="params">message, priority=<span class="string">&quot;INFO&quot;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟日志任务（参数：消息 + 优先级）&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;priority&#125;</span>] 记录日志: <span class="subst">&#123;message&#125;</span>&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;日志已保存: <span class="subst">&#123;message&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">3</span>) <span class="keyword">as</span> executor:</span><br><span class="line">        futures = []</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 动态提交不同类型的任务</span></span><br><span class="line">        <span class="comment"># 任务1：下载任务（参数：url, timeout）</span></span><br><span class="line">        futures.append(executor.submit(download, <span class="string">&quot;https://example.com&quot;</span>, timeout=<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 任务2：计算任务（参数：5, 3, &quot;+&quot;）</span></span><br><span class="line">        futures.append(executor.submit(calculate, <span class="number">5</span>, <span class="number">3</span>, <span class="string">&quot;+&quot;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 任务3：日志任务（参数：message=&quot;系统启动&quot;, priority=&quot;HIGH&quot;）</span></span><br><span class="line">        futures.append(executor.submit(log_message, <span class="string">&quot;系统启动&quot;</span>, <span class="string">&quot;HIGH&quot;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 动态追加任务（根据条件）</span></span><br><span class="line">        <span class="keyword">if</span> random.choice([<span class="literal">True</span>, <span class="literal">False</span>]):</span><br><span class="line">            <span class="comment"># 任务4：随机添加一个计算任务（参数：8, 4, &quot;*&quot;）</span></span><br><span class="line">            futures.append(executor.submit(calculate, <span class="number">8</span>, <span class="number">4</span>, <span class="string">&quot;*&quot;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理结果（按完成顺序，独立捕获异常）</span></span><br><span class="line">        <span class="keyword">for</span> future <span class="keyword">in</span> futures:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                result = future.result()</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;结果: <span class="subst">&#123;result&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">except</span> URLError <span class="keyword">as</span> e:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;下载失败: <span class="subst">&#123;e.reason&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">except</span> ValueError <span class="keyword">as</span> e:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;计算错误: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;未知错误: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点</strong>：</p>
+<ul>
+<li>手动控制每个任务的提交</li>
+<li>结果处理顺序固定</li>
+<li>可以单独处理每个任务的异常</li>
+</ul>
+<p><strong>最佳场景</strong>：</p>
+<ul>
+<li>需要跟踪任务来源的场景</li>
+<li>需要逐步处理结果的日志系统</li>
+</ul>
+<hr>
+<h3 id="3-as-completed"><a href="#3-as-completed" class="headerlink" title="3. as_completed"></a>3. <code>as_completed</code></h3><p><strong>典型用法</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> as_completed</span><br><span class="line"></span><br><span class="line">futures = [executor.submit(task, param) <span class="keyword">for</span> param <span class="keyword">in</span> params]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> future <span class="keyword">in</span> as_completed(futures):</span><br><span class="line">    res = future.result()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;收到结果: <span class="subst">&#123;res&#125;</span>&quot;</span>)  <span class="comment"># 按完成顺序输出</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>特点</strong>：</p>
+<ul>
+<li>实时获取已完成任务结果</li>
+<li>可以优先处理耗时短的任务</li>
+<li>需要额外维护future列表</li>
+</ul>
+<p><strong>最佳场景</strong>：</p>
+<ul>
+<li>文件下载（小文件优先完成）</li>
+<li>实时仪表盘更新</li>
+<li>需要快速获取部分结果的场景</li>
+</ul>
+<hr>
+<h2 id="性能特征对比"><a href="#性能特征对比" class="headerlink" title="性能特征对比"></a>性能特征对比</h2><h3 id="模拟耗时任务（3个任务分别需要3s-1s-2s）"><a href="#模拟耗时任务（3个任务分别需要3s-1s-2s）" class="headerlink" title="模拟耗时任务（3个任务分别需要3s&#x2F;1s&#x2F;2s）"></a>模拟耗时任务（3个任务分别需要3s&#x2F;1s&#x2F;2s）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, as_completed</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">sec</span>):</span><br><span class="line">    time.sleep(sec)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;sec&#125;</span>秒任务&quot;</span></span><br><span class="line"></span><br><span class="line">params = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>输出顺序</th>
+<th>总耗时</th>
+<th>首个结果时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>map</code></td>
+<td>3→1→2</td>
+<td>3s</td>
+<td>3s后</td>
+</tr>
+<tr>
+<td><code>submit</code>顺序处理</td>
+<td>3→1→2</td>
+<td>3s</td>
+<td>3s后</td>
+</tr>
+<tr>
+<td><code>as_completed</code></td>
+<td>1→2→3</td>
+<td>3s</td>
+<td>1s后</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>map</th>
+<th>submit+顺序</th>
+<th>as_completed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码简洁度</strong></td>
+<td>最简洁（自动管理）</td>
+<td>中等（需手动维护）</td>
+<td>最复杂（需动态处理）</td>
+</tr>
+<tr>
+<td><strong>结果顺序</strong></td>
+<td>输入顺序</td>
+<td>提交顺序</td>
+<td>完成顺序</td>
+</tr>
+<tr>
+<td><strong>实时反馈</strong></td>
+<td>无</td>
+<td>无</td>
+<td>有</td>
+</tr>
+<tr>
+<td><strong>异常容忍度</strong></td>
+<td>低（遇到错误立即停止）</td>
+<td>高（可单独处理）</td>
+<td>高（可单独处理）</td>
+</tr>
+<tr>
+<td><strong>内存效率</strong></td>
+<td>高（惰性迭代）</td>
+<td>低（全存储）</td>
+<td>中（动态释放）</td>
+</tr>
+</tbody></table>
+</article><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/image-3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css" media="print" onload="this.media='all'"><script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/26/python-threading/" title="python threading"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">python threading</div></div><div class="info-2"><div class="info-item-1">threading.Thread 适用场景：任务逻辑差异大；每个线程需要执行完全不同的逻辑 三个比较重要的参数   锁：threading.Lock()两种使用方法推荐with下方演示，第二种手动加锁lock.acquire()，然后释放lock.release() 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566#未使用的情况下def sing():    #with stats_lock:        for i in range(3):            print(&quot;正在唱歌...%d&quot;%i)            sleep(1)def dance():    #with stats_lock:        for i in range(3):            print(&quot;正在跳舞...%d&quot;%i)          ...</div></div></div></a><a class="pagination-related" href="/2025/08/26/python-as-completed/" title="python as_completed"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">python as_completed</div></div><div class="info-2"><div class="info-item-1">as_completed 方法详解🎯 核心区别：处理顺序   方法 执行顺序 结果获取顺序 适用场景    submit + 顺序处理 按提交顺序执行 按提交顺序获取 需要严格保持结果顺序的场景   as_completed 并行执行 按完成顺序获取 需要及时处理已完成任务的场景    📌 使用场景分析1. submit + 顺序处理典型代码： 123456from concurrent.futures import ThreadPoolExecutorwith ThreadPoolExecutor() as executor:    futures = [executor.submit(task, param) for param in params_list]    for future in futures:  # 按提交顺序处理        print(future.result())  特点：  必须等待前一个任务完成才能处理下一个 严格保持任务提交顺序 适合场景： 日志处理需要按时间顺序记录 结果需要顺序写入文件&#x2F;数据库     2....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">lky</div><div class="author-info-description">记录一些觉得有用的东西</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/likaiyuan00"><i class="fab fa-github"></i><span>地址</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">心平能愈三千疾 心静可通万事理</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94%EF%BC%88submit-as-completed-map%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">并发执行方法对比（submit&#x2F;as_completed&#x2F;map）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="toc-number">1.1.</span> <span class="toc-text">核心特性对比表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">方法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-executor-map"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. executor.map()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-submit-%E9%A1%BA%E5%BA%8F%E5%A4%84%E7%90%86"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. submit + 顺序处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-as-completed"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. as_completed</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%89%B9%E5%BE%81%E5%AF%B9%E6%AF%94"><span class="toc-number">1.3.</span> <span class="toc-text">性能特征对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E8%80%97%E6%97%B6%E4%BB%BB%E5%8A%A1%EF%BC%883%E4%B8%AA%E4%BB%BB%E5%8A%A1%E5%88%86%E5%88%AB%E9%9C%80%E8%A6%813s-1s-2s%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">模拟耗时任务（3个任务分别需要3s&#x2F;1s&#x2F;2s）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E5%AF%B9%E6%AF%94"><span class="toc-number">1.4.</span> <span class="toc-text">总结对比</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-as-completed/" title="python as_completed">python as_completed</a><time datetime="2025-08-26T09:12:29.000Z" title="发表于 2025-08-26 17:12:29">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-ThreadPoolExecutor/" title="python ThreadPoolExecutor">python ThreadPoolExecutor</a><time datetime="2025-08-26T09:08:36.000Z" title="发表于 2025-08-26 17:08:36">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-threading/" title="python threading">python threading</a><time datetime="2025-08-26T09:04:04.000Z" title="发表于 2025-08-26 17:04:04">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/22/mq/" title="mq">mq</a><time datetime="2025-08-22T07:28:18.000Z" title="发表于 2025-08-22 15:28:18">2025-08-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/22/prometheus%E8%BF%9B%E9%98%B6/" title="prometheus进阶">prometheus进阶</a><time datetime="2025-08-22T07:25:19.000Z" title="发表于 2025-08-22 15:25:19">2025-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By lky</div><div class="footer_custom_text">Hi, 欢迎观看我的博客 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49254673">点击这里进入</a>!"</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/medium-zoom/1.0.6/medium-zoom.min.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="请输入关键字" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
