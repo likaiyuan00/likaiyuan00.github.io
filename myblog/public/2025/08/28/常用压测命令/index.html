@@ -1,0 +1,369 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>常用压测命令 | 欢迎</title><meta name="author" content="lky"><meta name="copyright" content="lky"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、siege1. 下载与安装1234567891011# Ubuntu&#x2F;Debiansudo apt-get install siege# CentOS&#x2F;RHELsudo yum install siege# macOSbrew install siege# 验证安装siege --version  2. 核心参数   参数 说明 示例    -c &lt;并发数&gt; 并发用户数（必须参数）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用压测命令">
+<meta property="og:url" content="https://likaiyuan00.github.io/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="欢迎">
+<meta property="og:description" content="一、siege1. 下载与安装1234567891011# Ubuntu&#x2F;Debiansudo apt-get install siege# CentOS&#x2F;RHELsudo yum install siege# macOSbrew install siege# 验证安装siege --version  2. 核心参数   参数 说明 示例    -c &lt;并发数&gt; 并发用户数（必须参数）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likaiyuan00.github.io/img/image-3.png">
+<meta property="article:published_time" content="2025-08-28T06:41:02.000Z">
+<meta property="article:modified_time" content="2025-08-28T06:41:54.543Z">
+<meta property="article:author" content="lky">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likaiyuan00.github.io/img/image-3.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "常用压测命令",
+  "url": "https://likaiyuan00.github.io/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/",
+  "image": "https://likaiyuan00.github.io/img/image-3.png",
+  "datePublished": "2025-08-28T06:41:02.000Z",
+  "dateModified": "2025-08-28T06:41:54.543Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "lky",
+      "url": "https://likaiyuan00.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/image-2.png"><link rel="canonical" href="https://likaiyuan00.github.io/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/@fortawesome/fontawesome-free@6.2.1/css/all.min.css"><link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '常用压测命令',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/img.png" alt="Logo"><span class="site-name">欢迎</span></a><a class="nav-page-title" href="/"><span class="site-name">常用压测命令</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">常用压测命令</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-28T06:41:02.000Z" title="发表于 2025-08-28 14:41:02">2025-08-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-28T06:41:54.543Z" title="更新于 2025-08-28 14:41:54">2025-08-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/linux/">linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、siege"><a href="#一、siege" class="headerlink" title="一、siege"></a>一、<strong>siege</strong></h2><h3 id="1-下载与安装"><a href="#1-下载与安装" class="headerlink" title="1. 下载与安装"></a>1. 下载与安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ubuntu/Debian</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install siege</span><br><span class="line"></span><br><span class="line"><span class="comment"># CentOS/RHEL</span></span><br><span class="line"><span class="built_in">sudo</span> yum install siege</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS</span></span><br><span class="line">brew install siege</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证安装</span></span><br><span class="line">siege --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-核心参数"><a href="#2-核心参数" class="headerlink" title="2. 核心参数"></a>2. 核心参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-c &lt;并发数&gt;</code></td>
+<td>并发用户数（必须参数）</td>
+<td><code>-c 100</code></td>
+</tr>
+<tr>
+<td><code>-t &lt;时间&gt;</code></td>
+<td>压测持续时间（s&#x2F;m&#x2F;h）</td>
+<td><code>-t 30s</code></td>
+</tr>
+<tr>
+<td><code>-r &lt;次数&gt;</code></td>
+<td>每个用户重复请求次数</td>
+<td><code>-r 50</code></td>
+</tr>
+<tr>
+<td><code>-f &lt;文件&gt;</code></td>
+<td>从文件读取多个URL进行压测</td>
+<td><code>-f urls.txt</code></td>
+</tr>
+<tr>
+<td><code>-i</code></td>
+<td>随机发送文件中的URL请求</td>
+<td><code>-i -f urls.txt</code></td>
+</tr>
+<tr>
+<td><code>-b</code></td>
+<td>无延迟模式（最大压力测试）</td>
+<td><code>-b</code></td>
+</tr>
+<tr>
+<td><code>-v</code></td>
+<td>显示详细请求日志</td>
+<td><code>-v</code></td>
+</tr>
+</tbody></table>
+<h3 id="3-示例命令"><a href="#3-示例命令" class="headerlink" title="3. 示例命令"></a>3. 示例命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 100并发用户，持续30秒压测</span></span><br><span class="line">siege -c 100 -t 30s http://example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从文件加载URL列表，50并发用户，每个用户重复20次</span></span><br><span class="line">siege -c 50 -r 20 -f urls.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-测试结果解读"><a href="#4-测试结果解读" class="headerlink" title="4. 测试结果解读"></a>4. 测试结果解读</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Transactions:              2000 hits        # 总请求数</span><br><span class="line">Availability:              99.50 %          # 请求成功率（失败率=1 - Availability）</span><br><span class="line">Elapsed time:              59.99 sec        # 总耗时</span><br><span class="line">Data transferred:          5.67 MB          # 总数据传输量</span><br><span class="line">Response time:             0.25 sec         # 平均响应时间</span><br><span class="line">Transaction rate:          33.34 trans/sec  # 每秒处理请求数（QPS）</span><br><span class="line">Longest transaction:       1.20 sec         # 最慢请求耗时</span><br><span class="line">Shortest transaction:      0.05 sec         # 最快请求耗时</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="二、ab（ApacheBench）"><a href="#二、ab（ApacheBench）" class="headerlink" title="二、ab（ApacheBench）"></a>二、<strong>ab（ApacheBench）</strong></h2><h3 id="1-下载与安装-1"><a href="#1-下载与安装-1" class="headerlink" title="1. 下载与安装"></a>1. 下载与安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ubuntu/Debian</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install apache2-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># CentOS/RHEL</span></span><br><span class="line"><span class="built_in">sudo</span> yum install httpd-tools</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS（预装或使用Homebrew）</span></span><br><span class="line">ab -V</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证安装</span></span><br><span class="line">ab -V</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-核心参数-1"><a href="#2-核心参数-1" class="headerlink" title="2. 核心参数"></a>2. 核心参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-n &lt;总数&gt;</code></td>
+<td>总请求数（必须参数）</td>
+<td><code>-n 1000</code></td>
+</tr>
+<tr>
+<td><code>-c &lt;并发数&gt;</code></td>
+<td>并发用户数（必须参数）</td>
+<td><code>-c 100</code></td>
+</tr>
+<tr>
+<td><code>-k</code></td>
+<td>启用HTTP Keep-Alive长连接</td>
+<td><code>-k</code></td>
+</tr>
+<tr>
+<td><code>-H &lt;头部&gt;</code></td>
+<td>添加自定义HTTP头部</td>
+<td><code>-H &quot;Content-Type: application/json&quot;</code></td>
+</tr>
+<tr>
+<td><code>-p &lt;文件&gt;</code></td>
+<td>POST请求时发送的数据文件</td>
+<td><code>-p data.json</code></td>
+</tr>
+<tr>
+<td><code>-T &lt;类型&gt;</code></td>
+<td>POST&#x2F;PUT内容类型</td>
+<td><code>-T application/json</code></td>
+</tr>
+</tbody></table>
+<h3 id="3-示例命令-1"><a href="#3-示例命令-1" class="headerlink" title="3. 示例命令"></a>3. 示例命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 总请求1000次，并发100用户，启用Keep-Alive</span></span><br><span class="line">ab -n 1000 -c 100 -k http://example.com/</span><br><span class="line"></span><br><span class="line"><span class="comment"># POST请求测试（发送JSON数据）</span></span><br><span class="line">ab -n 500 -c 50 -T application/json -p data.json http://example.com/api</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-测试结果解读-1"><a href="#4-测试结果解读-1" class="headerlink" title="4. 测试结果解读"></a>4. 测试结果解读</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Concurrency Level:      100                 # 并发数</span><br><span class="line">Time taken for tests:   2.123 seconds       # 总耗时</span><br><span class="line">Complete requests:      1000                # 成功请求数</span><br><span class="line">Failed requests:        0                   # 失败请求数</span><br><span class="line">Requests per second:    470.34 [#/sec]      # QPS（每秒请求数）</span><br><span class="line">Time per request:       212.300 [ms]        # 平均请求耗时（并发场景）</span><br><span class="line">Time per request:       2.123 [ms]          # 平均请求耗时（单用户）</span><br><span class="line">Transfer rate:          512.34 [Kbytes/sec] # 数据传输速率</span><br><span class="line"></span><br><span class="line">Percentage of the requests served within a certain time (ms):</span><br><span class="line">  50%    25    # 50%的请求在25ms内完成</span><br><span class="line">  90%    50    # 90%的请求在50ms内完成</span><br><span class="line">  99%    200   # 99%的请求在200ms内完成</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="三、wrk"><a href="#三、wrk" class="headerlink" title="三、wrk"></a>三、<strong>wrk</strong></h2><h3 id="1-下载与安装-2"><a href="#1-下载与安装-2" class="headerlink" title="1. 下载与安装"></a>1. 下载与安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 源码编译（需提前安装Git和GCC）</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/wg/wrk.git</span><br><span class="line"><span class="built_in">cd</span> wrk &amp;&amp; make</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS</span></span><br><span class="line">brew install wrk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证安装</span></span><br><span class="line">wrk --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-核心参数-2"><a href="#2-核心参数-2" class="headerlink" title="2. 核心参数"></a>2. 核心参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-t &lt;线程数&gt;</code></td>
+<td>工作线程数（建议与CPU核心一致）</td>
+<td><code>-t 4</code></td>
+</tr>
+<tr>
+<td><code>-c &lt;并发数&gt;</code></td>
+<td>并发连接数（必须参数）</td>
+<td><code>-c 100</code></td>
+</tr>
+<tr>
+<td><code>-d &lt;时间&gt;</code></td>
+<td>压测持续时间（s&#x2F;m&#x2F;h）</td>
+<td><code>-d 30s</code></td>
+</tr>
+<tr>
+<td><code>-s &lt;脚本&gt;</code></td>
+<td>使用Lua脚本定制请求（如POST）</td>
+<td><code>-s post.lua</code></td>
+</tr>
+<tr>
+<td><code>--latency</code></td>
+<td>输出详细延迟分布统计</td>
+<td><code>--latency</code></td>
+</tr>
+<tr>
+<td><code>--timeout &lt;时间&gt;</code></td>
+<td>设置请求超时时间</td>
+<td><code>--timeout 10s</code></td>
+</tr>
+</tbody></table>
+<h3 id="3-示例命令-2"><a href="#3-示例命令-2" class="headerlink" title="3. 示例命令"></a>3. 示例命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 4线程、100并发、持续30秒压测</span></span><br><span class="line">wrk -t4 -c100 -d30s http://example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用Lua脚本模拟POST请求（见下方脚本示例）</span></span><br><span class="line">wrk -t4 -c100 -d10s -s post.lua http://example.com/api</span><br></pre></td></tr></table></figure>
+
+<h4 id="Lua脚本示例（post-lua）："><a href="#Lua脚本示例（post-lua）：" class="headerlink" title="Lua脚本示例（post.lua）："></a>Lua脚本示例（<code>post.lua</code>）：</h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wrk.method = <span class="string">&quot;POST&quot;</span></span><br><span class="line">wrk.headers[<span class="string">&quot;Content-Type&quot;</span>] = <span class="string">&quot;application/json&quot;</span></span><br><span class="line">wrk.body = <span class="string">&#x27;&#123;&quot;username&quot;:&quot;test&quot;, &quot;password&quot;:&quot;123456&quot;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-测试结果解读-2"><a href="#4-测试结果解读-2" class="headerlink" title="4. 测试结果解读"></a>4. 测试结果解读</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Running 30s test @ http://example.com</span><br><span class="line">  4 threads and 100 connections                  # 线程数、并发连接数</span><br><span class="line">  Thread Stats   Avg      Stdev     Max   +/- Stdev</span><br><span class="line">    Latency    45.76ms   12.34ms 200.15ms   85.23%  # 延迟分布（平均、标准差、最大值、分布比例）</span><br><span class="line">    Req/Sec    550.12    120.45     2.34k    75.34% # 每秒请求数分布</span><br><span class="line">  Latency Distribution                           # 延迟百分比分布</span><br><span class="line">     50%   42.12ms</span><br><span class="line">     75%   50.23ms</span><br><span class="line">     90%   65.45ms</span><br><span class="line">     99%  185.67ms</span><br><span class="line">  65432 requests in 30.01s, 12.34MB read         # 总请求数、数据读取量</span><br><span class="line">Requests/sec:   2180.23                          # QPS</span><br><span class="line">Transfer/sec:    420.45KB                        # 每秒数据传输量</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="四、工具横向对比"><a href="#四、工具横向对比" class="headerlink" title="四、工具横向对比"></a>四、工具横向对比</h2><table>
+<thead>
+<tr>
+<th><strong>维度</strong></th>
+<th><strong>siege</strong></th>
+<th><strong>ab</strong></th>
+<th><strong>wrk</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>安装复杂度</strong></td>
+<td>⭐⭐（包管理器直装）</td>
+<td>⭐⭐⭐（ApacheUtils集成）</td>
+<td>⭐⭐（需编译或Homebrew）</td>
+</tr>
+<tr>
+<td><strong>性能上限</strong></td>
+<td>⭐⭐（万级QPS）</td>
+<td>⭐⭐⭐（十万级QPS）</td>
+<td>⭐⭐⭐⭐（百万级QPS）</td>
+</tr>
+<tr>
+<td><strong>灵活性</strong></td>
+<td>⭐⭐（支持URL列表、随机请求）</td>
+<td>⭐（仅支持简单静态请求）</td>
+<td>⭐⭐⭐⭐（Lua脚本扩展动态场景）</td>
+</tr>
+<tr>
+<td><strong>结果可读性</strong></td>
+<td>⭐⭐⭐（清晰的成功率&#x2F;响应时间）</td>
+<td>⭐⭐（QPS和延迟分布）</td>
+<td>⭐⭐⭐（线程级统计+延迟分布）</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>页面级压测、成功率监控</td>
+<td>快速基准测试、简单接口验证</td>
+<td>高并发测试、复杂业务逻辑模拟</td>
+</tr>
+<tr>
+<td><strong>资源消耗</strong></td>
+<td>高（进程模型）</td>
+<td>中（单线程+多进程）</td>
+<td>低（多线程+事件驱动）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、最终建议"><a href="#五、最终建议" class="headerlink" title="五、最终建议"></a>五、最终建议</h2><ol>
+<li><strong>简单快速测试</strong>：用 <code>ab</code>，一条命令即可获取QPS和延迟分布。</li>
+<li><strong>高并发&#x2F;复杂场景</strong>：选 <code>wrk</code>，支持Lua脚本模拟动态请求（如登录、鉴权）。</li>
+<li><strong>成功率验证</strong>：用 <code>siege</code>，明确展示事务成功率和响应时间极值。</li>
+<li><strong>生产级压测</strong>：结合多工具结果交叉验证（如先用 <code>ab</code> 快速验证，再用 <code>wrk</code> 压测极限）。</li>
+</ol>
+<p>附：各工具官网</p>
+<ul>
+<li><strong>siege</strong>: <a target="_blank" rel="noopener" href="https://www.joedog.org/siege-home/">https://www.joedog.org/siege-home/</a></li>
+<li><strong>ab</strong>: <a target="_blank" rel="noopener" href="https://httpd.apache.org/docs/2.4/programs/ab.html">Apache HTTP Server Documentation</a></li>
+<li><strong>wrk</strong>: <a target="_blank" rel="noopener" href="https://github.com/wg/wrk">https://github.com/wg/wrk</a></li>
+</ul>
+</article><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/image-3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css" media="print" onload="this.media='all'"><script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/08/26/python-as-completed/" title="python as_completed"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">python as_completed</div></div><div class="info-2"><div class="info-item-1">as_completed 方法详解🎯 核心区别：处理顺序   方法 执行顺序 结果获取顺序 适用场景    submit + 顺序处理 按提交顺序执行 按提交顺序获取 需要严格保持结果顺序的场景   as_completed 并行执行 按完成顺序获取 需要及时处理已完成任务的场景    📌 使用场景分析1. submit + 顺序处理典型代码： 123456from concurrent.futures import ThreadPoolExecutorwith ThreadPoolExecutor() as executor:    futures = [executor.submit(task, param) for param in params_list]    for future in futures:  # 按提交顺序处理        print(future.result())  特点：  必须等待前一个任务完成才能处理下一个 严格保持任务提交顺序 适合场景： 日志处理需要按时间顺序记录 结果需要顺序写入文件&#x2F;数据库     2....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">lky</div><div class="author-info-description">记录一些觉得有用的东西</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/likaiyuan00"><i class="fab fa-github"></i><span>地址</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">心平能愈三千疾 心静可通万事理</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81siege"><span class="toc-number">1.</span> <span class="toc-text">一、siege</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">1. 下载与安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">2. 核心参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%A4%BA%E4%BE%8B%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.</span> <span class="toc-text">3. 示例命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB"><span class="toc-number">1.4.</span> <span class="toc-text">4. 测试结果解读</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81ab%EF%BC%88ApacheBench%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">二、ab（ApacheBench）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85-1"><span class="toc-number">2.1.</span> <span class="toc-text">1. 下载与安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8F%82%E6%95%B0-1"><span class="toc-number">2.2.</span> <span class="toc-text">2. 核心参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%A4%BA%E4%BE%8B%E5%91%BD%E4%BB%A4-1"><span class="toc-number">2.3.</span> <span class="toc-text">3. 示例命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB-1"><span class="toc-number">2.4.</span> <span class="toc-text">4. 测试结果解读</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81wrk"><span class="toc-number">3.</span> <span class="toc-text">三、wrk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85-2"><span class="toc-number">3.1.</span> <span class="toc-text">1. 下载与安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8F%82%E6%95%B0-2"><span class="toc-number">3.2.</span> <span class="toc-text">2. 核心参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%A4%BA%E4%BE%8B%E5%91%BD%E4%BB%A4-2"><span class="toc-number">3.3.</span> <span class="toc-text">3. 示例命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Lua%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B%EF%BC%88post-lua%EF%BC%89%EF%BC%9A"><span class="toc-number">3.3.1.</span> <span class="toc-text">Lua脚本示例（post.lua）：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB-2"><span class="toc-number">3.4.</span> <span class="toc-text">4. 测试结果解读</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B7%A5%E5%85%B7%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94"><span class="toc-number">4.</span> <span class="toc-text">四、工具横向对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%9C%80%E7%BB%88%E5%BB%BA%E8%AE%AE"><span class="toc-number">5.</span> <span class="toc-text">五、最终建议</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/" title="常用压测命令">常用压测命令</a><time datetime="2025-08-28T06:41:02.000Z" title="发表于 2025-08-28 14:41:02">2025-08-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-as-completed/" title="python as_completed">python as_completed</a><time datetime="2025-08-26T09:12:29.000Z" title="发表于 2025-08-26 17:12:29">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-ThreadPoolExecutor/" title="python ThreadPoolExecutor">python ThreadPoolExecutor</a><time datetime="2025-08-26T09:08:36.000Z" title="发表于 2025-08-26 17:08:36">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-threading/" title="python threading">python threading</a><time datetime="2025-08-26T09:04:04.000Z" title="发表于 2025-08-26 17:04:04">2025-08-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/22/mq/" title="mq">mq</a><time datetime="2025-08-22T07:28:18.000Z" title="发表于 2025-08-22 15:28:18">2025-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By lky</div><div class="footer_custom_text">Hi, 欢迎观看我的博客 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49254673">点击这里进入</a>!"</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/medium-zoom/1.0.6/medium-zoom.min.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="请输入关键字" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
