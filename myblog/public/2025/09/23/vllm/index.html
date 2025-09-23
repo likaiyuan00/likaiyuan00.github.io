@@ -1,0 +1,258 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>vllm | 欢迎</title><meta name="author" content="lky"><meta name="copyright" content="lky"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="vLLM 分布式服务部署与压测指南目录 Docker 部署 服务启动 API 测试 压力测试 PD分离   https:&#x2F;&#x2F;www.modelscope.cn&#x2F;models&#x2F;deepseek-ai&#x2F;DeepSeek-R1-Distill-Qwen-7Bhttps:&#x2F;&#x2F;docs.vllm.com.cn&#x2F;en&#x2F;latest&#x2F;getting_started&#x2F;quickstart.html#install">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vllm">
+<meta property="og:url" content="https://likaiyuan00.github.io/2025/09/23/vllm/index.html">
+<meta property="og:site_name" content="欢迎">
+<meta property="og:description" content="vLLM 分布式服务部署与压测指南目录 Docker 部署 服务启动 API 测试 压力测试 PD分离   https:&#x2F;&#x2F;www.modelscope.cn&#x2F;models&#x2F;deepseek-ai&#x2F;DeepSeek-R1-Distill-Qwen-7Bhttps:&#x2F;&#x2F;docs.vllm.com.cn&#x2F;en&#x2F;latest&#x2F;getting_started&#x2F;quickstart.html#install">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likaiyuan00.github.io/img/image-3.png">
+<meta property="article:published_time" content="2025-09-23T06:41:13.000Z">
+<meta property="article:modified_time" content="2025-09-23T06:42:00.334Z">
+<meta property="article:author" content="lky">
+<meta property="article:tag" content="llm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likaiyuan00.github.io/img/image-3.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "vllm",
+  "url": "https://likaiyuan00.github.io/2025/09/23/vllm/",
+  "image": "https://likaiyuan00.github.io/img/image-3.png",
+  "datePublished": "2025-09-23T06:41:13.000Z",
+  "dateModified": "2025-09-23T06:42:00.334Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "lky",
+      "url": "https://likaiyuan00.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/image-2.png"><link rel="canonical" href="https://likaiyuan00.github.io/2025/09/23/vllm/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/@fortawesome/fontawesome-free@6.2.1/css/all.min.css"><link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'vllm',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/img.png" alt="Logo"><span class="site-name">欢迎</span></a><a class="nav-page-title" href="/"><span class="site-name">vllm</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">vllm</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-23T06:41:13.000Z" title="发表于 2025-09-23 14:41:13">2025-09-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-23T06:42:00.334Z" title="更新于 2025-09-23 14:42:00">2025-09-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="vLLM-分布式服务部署与压测指南"><a href="#vLLM-分布式服务部署与压测指南" class="headerlink" title="vLLM 分布式服务部署与压测指南"></a>vLLM 分布式服务部署与压测指南</h1><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#docker-%E9%83%A8%E7%BD%B2">Docker 部署</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8">服务启动</a></li>
+<li><a href="#api-%E6%B5%8B%E8%AF%95">API 测试</a></li>
+<li><a href="#%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95">压力测试</a></li>
+<li><a href="#PD%E5%88%86%E7%A6%BB">PD分离</a></li>
+</ol>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://www.modelscope.cn/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B">https://www.modelscope.cn/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B</a><br><br><a target="_blank" rel="noopener" href="https://docs.vllm.com.cn/en/latest/getting_started/quickstart.html#installation">https://docs.vllm.com.cn/en/latest/getting_started/quickstart.html#installation</a></p>
+<h2 id="Docker-部署"><a href="#Docker-部署" class="headerlink" title="Docker 部署"></a>Docker 部署</h2><h3 id="启动-vLLM-服务容器"><a href="#启动-vLLM-服务容器" class="headerlink" title="启动 vLLM 服务容器"></a>启动 vLLM 服务容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run -t -d \</span><br><span class="line">    --name=<span class="string">&quot;vllm&quot;</span> \</span><br><span class="line">    --ipc=host \</span><br><span class="line">    --cap-add=SYS_PTRACE \</span><br><span class="line">    --network=host \</span><br><span class="line">    --gpus all \</span><br><span class="line">    --privileged \</span><br><span class="line">    --<span class="built_in">ulimit</span> memlock=-1 \</span><br><span class="line">    --<span class="built_in">ulimit</span> stack=67108864 \</span><br><span class="line">    -v /mnt:/mnt \</span><br><span class="line">    registry.cn-hangzhou.aliyuncs.com/lky-deploy/llm:vllm-server-0.7.2</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键参数说明</strong>：</p>
+<ul>
+<li><code>--gpus all</code>：启用所有 GPU</li>
+<li><code>--network=host</code>：使用主机网络模式</li>
+<li><code>-v /mnt:/mnt</code>：挂载宿主机存储卷</li>
+<li><code>--privileged</code>：赋予容器特权模式</li>
+</ul>
+<hr>
+<h2 id="服务启动"><a href="#服务启动" class="headerlink" title="服务启动"></a>服务启动</h2><h3 id="1-初始化环境"><a href="#1-初始化环境" class="headerlink" title="1. 初始化环境"></a>1. 初始化环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> GLOO_SOCKET_IFNAME=eth0  <span class="comment"># 指定网络接口</span></span><br><span class="line"><span class="built_in">export</span> NCCL_SOCKET_IFNAME=eth0  <span class="comment"># 指定 NCCL 网络接口</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#主节点执行</span></span><br><span class="line">ray start --<span class="built_in">head</span> --dashboard-host 0.0.0.0</span><br><span class="line"><span class="comment">#从节点执行</span></span><br><span class="line">ray start --address=<span class="string">&#x27;$&#123;master_ip&#125;:6379&#x27;</span></span><br><span class="line"><span class="comment">#查看状态</span></span><br><span class="line">ray status</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-启动-vLLM-服务"><a href="#2-启动-vLLM-服务" class="headerlink" title="2. 启动 vLLM 服务"></a>2. 启动 vLLM 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#单节点</span></span><br><span class="line">vllm serve /mnt/7B \</span><br><span class="line">--tensor-parallel-size 8 \</span><br><span class="line">--served-model-name  vllm \</span><br><span class="line">--trust-remote-code \</span><br><span class="line">--enable-chunked-prefill \</span><br><span class="line">--host 0.0.0.0</span><br><span class="line"><span class="comment">#两台节点，每个节点8张卡</span></span><br><span class="line">vllm serve /mnt/DeepSeek-R1 \</span><br><span class="line">  --tensor-parallel-size 16 \</span><br><span class="line">  --trust-remote-code \</span><br><span class="line">  --enable-chunked-prefill \</span><br><span class="line">  --pipeline-parallel-size 2 \</span><br><span class="line">  --host 0.0.0.0 \</span><br><span class="line">  --max-num-batched-tokens 131072 &amp;&gt; vllm.log &amp;</span><br><span class="line"><span class="comment">#--max-num-batched-tokens 131072</span></span><br><span class="line"><span class="comment">#--max-model-len 131072</span></span><br><span class="line"><span class="comment">#--enforce-eager </span></span><br><span class="line"><span class="comment">#--dtype=half --quantization fp8 --no-enable-prefix-caching </span></span><br><span class="line"><span class="comment">#--gpu-memory-utilization 0.95 --served-model-name  vllm</span></span><br></pre></td></tr></table></figure>
+<p>参数文档：<a target="_blank" rel="noopener" href="https://docs.vllm.com.cn/en/latest/configuration/engine_args.html#modelconfig">https://docs.vllm.com.cn/en/latest/configuration/engine_args.html#modelconfig</a><br><br><strong>核心参数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--tensor-parallel-size 16</code></td>
+<td>张量并行度</td>
+</tr>
+<tr>
+<td><code>--pipeline-parallel-size 2</code></td>
+<td>流水线并行度</td>
+</tr>
+<tr>
+<td><code>--max-num-batched-tokens 131072</code></td>
+<td>最大批处理 token 数（约 128K）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="API-测试"><a href="#API-测试" class="headerlink" title="API 测试"></a>API 测试</h2><h3 id="1-聊天接口测试"><a href="#1-聊天接口测试" class="headerlink" title="1. 聊天接口测试"></a>1. 聊天接口测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:8000/v1/chat/completions \</span><br><span class="line">  -H <span class="string">&quot;Content-Type:application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;:&quot;/mnt/DeepSeek-V3/DeepSeek-V3/&quot;,</span></span><br><span class="line"><span class="string">    &quot;messages&quot;:[&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;写一首20字的月亮诗&quot;&#125;],</span></span><br><span class="line"><span class="string">    &quot;stream&quot;:false&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-补全接口测试"><a href="#2-补全接口测试" class="headerlink" title="2. 补全接口测试"></a>2. 补全接口测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:8000/v1/completions \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;/mnt/DeepSeek-R1&quot;,</span></span><br><span class="line"><span class="string">    &quot;prompt&quot;: &quot;巴黎是法国的首都吗？&quot;,</span></span><br><span class="line"><span class="string">    &quot;max_tokens&quot;: 50&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="压力测试"><a href="#压力测试" class="headerlink" title="压力测试"></a>压力测试</h2><h3 id="1-启动压测容器"><a href="#1-启动压测容器" class="headerlink" title="1. 启动压测容器"></a>1. 启动压测容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --name vllm-benchmark -it -v /mnt:/mnt -d \</span><br><span class="line">  registry.cn-hangzhou.aliyuncs.com/lky-deploy/llm:vllm-benchmark-tagv0.7.2 bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-准备测试数据集"><a href="#2-准备测试数据集" class="headerlink" title="2. 准备测试数据集"></a>2. 准备测试数据集</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">modelscope download --dataset gliang1001/ShareGPT_V3_unfiltered_cleaned_split \</span><br><span class="line">  ShareGPT_V3_unfiltered_cleaned_split.json --local_dir /root/</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-执行压测脚本"><a href="#3-执行压测脚本" class="headerlink" title="3. 执行压测脚本"></a>3. 执行压测脚本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义模型名称（根据实际情况替换）</span></span><br><span class="line">NAME=<span class="string">&quot;/mnt/DeepSeek-R1/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义并发数和请求数的对应关系数组（格式：concurrency1:num_prompt1 concurrency2:num_prompt2 ...）</span></span><br><span class="line">PAIRS=(</span><br><span class="line">  <span class="string">&quot;1:10&quot;</span></span><br><span class="line">  <span class="string">&quot;8:80&quot;</span></span><br><span class="line">  <span class="string">&quot;16:160&quot;</span></span><br><span class="line">  <span class="string">&quot;24:240&quot;</span></span><br><span class="line">  <span class="string">&quot;32:320&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 固定参数（与原始命令保持一致）</span></span><br><span class="line">RANDOM_INPUT_LEN=1</span><br><span class="line">RANDOM_OUTPUT_LEN=128</span><br><span class="line">RANDOM_RANGE_RATIO=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历所有配对</span></span><br><span class="line"><span class="keyword">for</span> pair <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;PAIRS[@]&#125;</span>&quot;</span>; <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 从配对中提取并发数和请求数</span></span><br><span class="line">  IFS=<span class="string">&quot;:&quot;</span> <span class="built_in">read</span> -r concurrency num_prompt &lt;&lt;&lt; <span class="string">&quot;<span class="variable">$pair</span>&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 生成输出文件名（格式：inputlen_outputlen_ratio_concurrency_prompts.txt）</span></span><br><span class="line">  output_file=<span class="string">&quot;<span class="variable">$&#123;RANDOM_INPUT_LEN&#125;</span>_<span class="variable">$&#123;RANDOM_OUTPUT_LEN&#125;</span>_<span class="variable">$&#123;RANDOM_RANGE_RATIO&#125;</span>_c<span class="variable">$&#123;concurrency&#125;</span>_n<span class="variable">$&#123;num_prompt&#125;</span>.txt&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 执行基准测试命令</span></span><br><span class="line">  python3 /root/vllm/benchmarks/benchmark_serving.py \</span><br><span class="line">    --backend vllm \</span><br><span class="line">    --model <span class="string">&quot;<span class="variable">$NAME</span>&quot;</span> \</span><br><span class="line">    --served-model-name <span class="string">&quot;<span class="variable">$NAME</span>&quot;</span> \</span><br><span class="line">    --trust-remote-code \</span><br><span class="line">    --dataset-name random \</span><br><span class="line">    --dataset-path /root/ShareGPT_V3_unfiltered_cleaned_split.json \</span><br><span class="line">    --random-input-len <span class="variable">$RANDOM_INPUT_LEN</span> \</span><br><span class="line">    --random-output-len <span class="variable">$RANDOM_OUTPUT_LEN</span> \</span><br><span class="line">    --random-range-ratio <span class="variable">$RANDOM_RANGE_RATIO</span> \</span><br><span class="line">    --num-prompts <span class="variable">$num_prompt</span> \</span><br><span class="line">    --max-concurrency <span class="variable">$concurrency</span> \</span><br><span class="line">    --request-rate inf \</span><br><span class="line">    --host 10.112.201.25 \</span><br><span class="line">    --port 8000 \</span><br><span class="line">    --endpoint /v1/completions \</span><br><span class="line">    &amp;&gt; <span class="string">&quot;<span class="variable">$output_file</span>&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;已完成测试：concurrency=<span class="variable">$&#123;concurrency&#125;</span>, num_prompts=<span class="variable">$&#123;num_prompt&#125;</span>&quot;</span></span><br><span class="line">  <span class="built_in">sleep</span> 3</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;所有测试任务已完成！&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>压测配置说明</strong>：</p>
+<ul>
+<li>测试模式：随机输入&#x2F;输出长度</li>
+<li>输入长度：1 token</li>
+<li>输出长度：128 tokens</li>
+<li>并发梯度：1~32 并发</li>
+<li>请求量梯度：10~320 请求</li>
+</ul>
+<hr>
+<h2 id="PD分离"><a href="#PD分离" class="headerlink" title="PD分离"></a>PD分离</h2><p><a target="_blank" rel="noopener" href="https://docs.vllm.com.cn/en/latest/features/disagg_prefill.html">官方文档参考</a></p>
+<h3 id="1-预填充节点配置（Prefill）"><a href="#1-预填充节点配置（Prefill）" class="headerlink" title="1. 预填充节点配置（Prefill）"></a>1. 预填充节点配置（Prefill）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预填充节点1</span></span><br><span class="line">CUDA_VISIBLE_DEVICES=0 vllm serve /data/7B \</span><br><span class="line">  --port 8100 \</span><br><span class="line">  --max-model-len 100 \</span><br><span class="line">  --gpu-memory-utilization 0.9 \</span><br><span class="line">  --kv-transfer-config <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;kv_connector&quot;: &quot;PyNcclConnector&quot;,</span></span><br><span class="line"><span class="string">    &quot;kv_role&quot;: &quot;kv_producer&quot;,         </span></span><br><span class="line"><span class="string">    &quot;kv_rank&quot;: 0,                     </span></span><br><span class="line"><span class="string">    &quot;kv_parallel_size&quot;: 2,            </span></span><br><span class="line"><span class="string">    &quot;kv_ip&quot;: &quot;172.25.79.18&quot;,         </span></span><br><span class="line"><span class="string">    &quot;kv_port&quot;: 14579                  </span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 预填充节点2（需修改端口和设备号）</span></span><br><span class="line">CUDA_VISIBLE_DEVICES=1 vllm serve /data/7B \</span><br><span class="line">  --port 8101 \</span><br><span class="line">  ...</span><br><span class="line">  --kv-transfer-config <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    ... </span></span><br><span class="line"><span class="string">    &quot;kv_rank&quot;: 1,</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-解码节点配置（Decode）"><a href="#2-解码节点配置（Decode）" class="headerlink" title="2. 解码节点配置（Decode）"></a>2. 解码节点配置（Decode）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解码节点1</span></span><br><span class="line">CUDA_VISIBLE_DEVICES=1 vllm serve /data/7B \</span><br><span class="line">  --port 8200 \</span><br><span class="line">  ...</span><br><span class="line">  --kv-transfer-config <span class="string">&#x27;&#123; </span></span><br><span class="line"><span class="string">    &quot;kv_role&quot;: &quot;kv_consumer&quot;,</span></span><br><span class="line"><span class="string">    &quot;kv_rank&quot;: 1,</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解码节点2（需修改端口和设备号）</span></span><br><span class="line">CUDA_VISIBLE_DEVICES=2 vllm serve /data/7B \</span><br><span class="line">  --port 8201 \</span><br><span class="line">  ...</span><br><span class="line">  --kv-transfer-config <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string">    &quot;kv_rank&quot;: 0,</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-路由服务配置"><a href="#3-路由服务配置" class="headerlink" title="3. 路由服务配置"></a>3. 路由服务配置</h3><p><a target="_blank" rel="noopener" href="https://github.com/vllm-project/vllm/blob/main/examples/online_serving/disaggregated_serving/disagg_proxy_demo.py">https://github.com/vllm-project/vllm/blob/main/examples/online_serving/disaggregated_serving/disagg_proxy_demo.py</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">python3 examples/online_serving/disaggregated_serving/disagg_proxy_demo.py \</span><br><span class="line">  --model your_model_name \</span><br><span class="line">  --prefill localhost:8100 localhost:8101 \</span><br><span class="line">  --decode localhost:8200 localhost:8201 \</span><br><span class="line">  --port 8000</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h2><h3 id="公共参数"><a href="#公共参数" class="headerlink" title="公共参数"></a>公共参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--max-model-len</code></td>
+<td>最大序列长度（需与内存匹配）</td>
+</tr>
+<tr>
+<td><code>--gpu-memory-utilization</code></td>
+<td>GPU 显存利用率阈值（0.0~1.0）</td>
+</tr>
+<tr>
+<td><code>--kv-parallel-size</code></td>
+<td>KV 传输并行度（需与节点数一致）</td>
+</tr>
+</tbody></table>
+<h3 id="KV-传输参数"><a href="#KV-传输参数" class="headerlink" title="KV 传输参数"></a>KV 传输参数</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;kv_connector&quot;</span><span class="punctuation">:</span> <span class="string">&quot;PyNcclConnector&quot;</span><span class="punctuation">,</span>  <span class="comment">// 传输实现方式</span></span><br><span class="line">  <span class="attr">&quot;kv_role&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;producer&quot;</span>/<span class="string">&quot;consumer&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="comment">// 角色类型</span></span><br><span class="line">  <span class="attr">&quot;kv_rank&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span>                      <span class="comment">// 节点编号</span></span><br><span class="line">  <span class="attr">&quot;kv_ip&quot;</span><span class="punctuation">:</span> <span class="string">&quot;master_ip&quot;</span><span class="punctuation">,</span>              <span class="comment">// 主节点IP</span></span><br><span class="line">  <span class="attr">&quot;kv_port&quot;</span><span class="punctuation">:</span> <span class="number">14579</span>                   <span class="comment">// 通讯端口</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/llm/">llm</a></div><div class="post-share"><div class="social-share" data-image="/img/image-3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css" media="print" onload="this.media='all'"><script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/" title="常用压测命令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">常用压测命令</div></div><div class="info-2"><div class="info-item-1">一、siege1. 下载与安装1234567891011# Ubuntu/Debiansudo apt-get install siege# CentOS/RHELsudo yum install siege# macOSbrew install siege# 验证安装siege --version  2. 核心参数   参数 说明 示例    -c &lt;并发数&gt; 并发用户数（必须参数） -c 100   -t &lt;时间&gt; 压测持续时间（s&#x2F;m&#x2F;h） -t 30s   -r &lt;次数&gt; 每个用户重复请求次数 -r 50   -f &lt;文件&gt; 从文件读取多个URL进行压测 -f urls.txt   -i 随机发送文件中的URL请求 -i -f urls.txt   -b 无延迟模式（最大压力测试） -b   -v 显示详细请求日志 -v   3. 示例命令12345# 100并发用户，持续30秒压测siege -c 100 -t 30s http://example.com#...</div></div></div></a><a class="pagination-related" href="/2025/09/23/sglang/" title="sglang"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">sglang</div></div><div class="info-2"><div class="info-item-1">SGLang 部署与使用指南目录 SGLang 部署与使用指南 目录 环境准备与安装 基础环境配置   Docker容器部署 服务启动配置 单节点启动 双节点分布式启动   功能测试 性能基准测试 PD分离部署 环境准备 服务部署   分布式部署 (2P1D) Prefill节点配置 Decode节点配置       环境准备与安装基础环境配置12345678# 禁用IPv6sysctl -w net.ipv6.conf.all.disable_ipv6=1 sysctl -w net.ipv6.conf.default.disable_ipv6=1# 设置网络接口和NCCL参数export GLOO_SOCKET_IFNAME=eth0#export NCCL_DEBUG=infoexport NCCL_IB_DISABLE=1   Docker容器部署12345678docker run -d -t --network=host --gpus all \    --privileged \    --ipc=host \    --cap-add=SYS_PTRACE \ ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/23/cosyvoice2/" title="cosyvoice2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-23</div><div class="info-item-2">cosyvoice2</div></div><div class="info-2"><div class="info-item-1">CosyVoice 安装与使用指南环境准备1. 克隆代码仓库1234git clone --recursive https://github.com/FunAudioLLM/CosyVoice.gitcd CosyVoice# 若子模块克隆失败，重复执行直到成功git submodule update --init --recursive  2. 安装Miniconda1234wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.shbash Miniconda3-latest-Linux-x86_64.sh~/miniconda3/bin/conda init bashsource ~/.bashrc  3. 创建虚拟环境12conda create -n cosyvoice python=3.10conda activate cosyvoice  4. 安装系统依赖123sudo yum install sox sox-develsudo yum groupinstall...</div></div></div></a><a class="pagination-related" href="/2025/09/23/sglang/" title="sglang"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-23</div><div class="info-item-2">sglang</div></div><div class="info-2"><div class="info-item-1">SGLang 部署与使用指南目录 SGLang 部署与使用指南 目录 环境准备与安装 基础环境配置   Docker容器部署 服务启动配置 单节点启动 双节点分布式启动   功能测试 性能基准测试 PD分离部署 环境准备 服务部署   分布式部署 (2P1D) Prefill节点配置 Decode节点配置       环境准备与安装基础环境配置12345678# 禁用IPv6sysctl -w net.ipv6.conf.all.disable_ipv6=1 sysctl -w net.ipv6.conf.default.disable_ipv6=1# 设置网络接口和NCCL参数export GLOO_SOCKET_IFNAME=eth0#export NCCL_DEBUG=infoexport NCCL_IB_DISABLE=1   Docker容器部署12345678docker run -d -t --network=host --gpus all \    --privileged \    --ipc=host \    --cap-add=SYS_PTRACE \ ...</div></div></div></a><a class="pagination-related" href="/2025/05/12/%E9%83%A8%E7%BD%B2%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" title="部署本地大模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-12</div><div class="info-item-2">部署本地大模型</div></div><div class="info-2"><div class="info-item-1">模型框架  企业级服务，SGLang 是不二之选：凭借卓越的性能，其吞吐量和结构化输出能力堪称行业翘楚，为企业级应用筑牢根基。https://docs.sglang.ai/start/install.htmlhttps://github.com/sgl-project/sglang 在线高并发场景，VLLM 独占鳌头：凭借动态批处理和先进的内存管理技术，确保服务在高并发压力下依然稳定高效，保障业务流畅运行。https://docs.vllm.com.cn/en/latest/getting_started/installation/gpu.htmlhttps://github.com/vllm-project/vllm 个人开发领域，Ollama 崭露头角：简单易用，跨平台支持搭配丰富的模型库，让创意灵感瞬间触手可及，助力个人开发者快速实现想法。https://github.com/ollama/ollama?tab=readme-ov-file   LLM webui  Dify：适合企业开发复杂 AI...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image-3.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">lky</div><div class="author-info-description">记录一些觉得有用的东西</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/likaiyuan00"><i class="fab fa-github"></i><span>地址</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">心平能愈三千疾 心静可通万事理</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#vLLM-%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%8E%8B%E6%B5%8B%E6%8C%87%E5%8D%97"><span class="toc-number">1.</span> <span class="toc-text">vLLM 分布式服务部署与压测指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E9%83%A8%E7%BD%B2"><span class="toc-number">1.2.</span> <span class="toc-text">Docker 部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-vLLM-%E6%9C%8D%E5%8A%A1%E5%AE%B9%E5%99%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">启动 vLLM 服务容器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8"><span class="toc-number">1.3.</span> <span class="toc-text">服务启动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%E7%8E%AF%E5%A2%83"><span class="toc-number">1.3.1.</span> <span class="toc-text">1. 初始化环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%90%AF%E5%8A%A8-vLLM-%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.3.2.</span> <span class="toc-text">2. 启动 vLLM 服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API-%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">API 测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%81%8A%E5%A4%A9%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. 聊天接口测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%A1%A5%E5%85%A8%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. 补全接口测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="toc-number">1.5.</span> <span class="toc-text">压力测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E5%8E%8B%E6%B5%8B%E5%AE%B9%E5%99%A8"><span class="toc-number">1.5.1.</span> <span class="toc-text">1. 启动压测容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%87%86%E5%A4%87%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.5.2.</span> <span class="toc-text">2. 准备测试数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%A7%E8%A1%8C%E5%8E%8B%E6%B5%8B%E8%84%9A%E6%9C%AC"><span class="toc-number">1.5.3.</span> <span class="toc-text">3. 执行压测脚本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PD%E5%88%86%E7%A6%BB"><span class="toc-number">1.6.</span> <span class="toc-text">PD分离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A2%84%E5%A1%AB%E5%85%85%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%EF%BC%88Prefill%EF%BC%89"><span class="toc-number">1.6.1.</span> <span class="toc-text">1. 预填充节点配置（Prefill）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%A7%A3%E7%A0%81%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%EF%BC%88Decode%EF%BC%89"><span class="toc-number">1.6.2.</span> <span class="toc-text">2. 解码节点配置（Decode）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%B7%AF%E7%94%B1%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.3.</span> <span class="toc-text">3. 路由服务配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="toc-number">1.7.</span> <span class="toc-text">参数说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E5%85%B1%E5%8F%82%E6%95%B0"><span class="toc-number">1.7.1.</span> <span class="toc-text">公共参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV-%E4%BC%A0%E8%BE%93%E5%8F%82%E6%95%B0"><span class="toc-number">1.7.2.</span> <span class="toc-text">KV 传输参数</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/cosyvoice2/" title="cosyvoice2">cosyvoice2</a><time datetime="2025-09-23T06:45:27.000Z" title="发表于 2025-09-23 14:45:27">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/sglang/" title="sglang">sglang</a><time datetime="2025-09-23T06:44:29.000Z" title="发表于 2025-09-23 14:44:29">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/vllm/" title="vllm">vllm</a><time datetime="2025-09-23T06:41:13.000Z" title="发表于 2025-09-23 14:41:13">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/28/%E5%B8%B8%E7%94%A8%E5%8E%8B%E6%B5%8B%E5%91%BD%E4%BB%A4/" title="常用压测命令">常用压测命令</a><time datetime="2025-08-28T06:41:02.000Z" title="发表于 2025-08-28 14:41:02">2025-08-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/26/python-as-completed/" title="python as_completed">python as_completed</a><time datetime="2025-08-26T09:12:29.000Z" title="发表于 2025-08-26 17:12:29">2025-08-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By lky</div><div class="footer_custom_text">Hi, 欢迎观看我的博客 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49254673">点击这里进入</a>!"</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/medium-zoom/1.0.6/medium-zoom.min.js"></script><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="请输入关键字" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
