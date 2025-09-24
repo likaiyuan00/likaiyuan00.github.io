@@ -196,6 +196,14 @@ echo "所有测试任务已完成！"
 [官方文档参考](https://docs.vllm.com.cn/en/latest/features/disagg_prefill.html)
 ### 1. 预填充节点配置（Prefill）
 ```bash
+vLLM 目前支持 5 种类型的连接器：
+SharedStorageConnector, 通过共享存储路径进行 KV Cache 共享
+LMCacheConnectorV1，结合 LMCache 缓存和 NIXL 传输 KV Cache
+NixlConnector，基于 NIXL 传输 KV Cache
+P2pNcclConnector，利用 NVIDIA NCCL 进行 KV Cache 传输
+MultiConnector，多种连接器组合
+参考 https://docs.vllm.ai/en/latest/features/disagg_prefill.html?h=prefill#why-disaggregated-prefilling
+
 # 预填充节点1
 CUDA_VISIBLE_DEVICES=0 vllm serve /data/7B \
   --port 8100 \
@@ -252,6 +260,12 @@ python3 examples/online_serving/disaggregated_serving/disagg_proxy_demo.py \
   --prefill localhost:8100 localhost:8101 \
   --decode localhost:8200 localhost:8201 \
   --port 8000
+
+#https://github.com/vllm-project/vllm/blob/main/benchmarks/disagg_benchmarks/disagg_prefill_proxy_server.py
+wget https://raw.githubusercontent.com/vllm-project/vllm/refs/heads/main/benchmarks/disagg_benchmarks/disagg_prefill_proxy_server.py -O disagg_prefill_proxy_server.py
+python3 -m pip install --ignore-installed blinker quart -i https://pypi.tuna.tsinghua.edu.cn/simple
+wget https://raw.githubusercontent.com/vllm-project/vllm/refs/heads/main/benchmarks/disagg_benchmarks/rate_limiter.py -O  rate_limiter.py
+wget https://raw.githubusercontent.com/vllm-project/vllm/refs/heads/main/benchmarks/disagg_benchmarks/request_queue.py -O request_queue.py
 ```
 
 ---
